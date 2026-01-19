@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: todo
+
+  jpa:
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+    open-in-view: false   # 실무 권장
+    hibernate:
+      ddl-auto: update   # local: update / prod: validate
+#      dialect: org.hibernate.dialect.MariaDBDialect
+
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        jdbc:
+          time_zone: Asia/Seoul
+
