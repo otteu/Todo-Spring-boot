@@ -1,8 +1,14 @@
 package com.example.todo.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +16,8 @@ import com.example.todo.domain.Todo;
 import com.example.todo.domain.dto.TodoDTO;
 import com.example.todo.repository.TodoRepository;
 
+import dto.PageRequestDTO;
+import dto.PageResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -51,12 +59,34 @@ public class TodoServiceImpl implements TodoService {
 		todo.changeComplete(todoDTO.isComplete());
 		todo.changeDueDate(todoDTO.getDueDate());
 		
-		
 	}
 
 	@Override
 	public void remove(Long tno) {
-		// TODO Auto-generated method stub
-		
+		todoRepository.deleteById(tno);
 	}
+
+	@Override
+	public PageResponseDTO<TodoDTO> list(PageRequestDTO pageRequestDTO) {
+		Pageable pageable =
+			PageRequest.of(
+			pageRequestDTO.getPage() - 1 , // 1페이지가 0이므로 주의
+			pageRequestDTO.getSize(),
+			Sort.by("tno").descending());
+		
+		Page<Todo> result = todoRepository.findAll(pageable);
+		List<TodoDTO> dtoList = result.getContent().stream()
+			.map(todo -> modelMapper.map(todo, TodoDTO.class))
+			.collect(Collectors.toList());
+		
+		long totalCount = result.getTotalElements();
+		PageResponseDTO<TodoDTO> responseDTO = PageResponseDTO.<TodoDTO>withAll()
+			.dtoList(dtoList)
+			.pageRequestDTO(pageRequestDTO)
+			.totalCount(totalCount)
+			.build();
+		
+		return responseDTO;
+	}
+
 }

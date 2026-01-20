@@ -11,6 +11,8 @@ import com.example.todo.domain.Todo;
 import com.example.todo.domain.dto.TodoDTO;
 import com.example.todo.repository.TodoRepository;
 
+import dto.PageRequestDTO;
+import dto.PageResponseDTO;
 import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
@@ -53,6 +55,17 @@ class TodoServiceTest {
 		Long tno = 1L;
 		TodoDTO todoDTO = todoService.get(tno);
 		log.info(todoDTO);
+	}
+	
+	@Test
+	public void testList() {
+		PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+			.page(2)
+			.size(10)
+			.build();
+		
+		PageResponseDTO<TodoDTO> response = todoService.list(pageRequestDTO);
+		log.info(response);
 	}
 	
 	
