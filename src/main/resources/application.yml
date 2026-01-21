@@ -18,3 +18,15 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
 
+  servlet:
+    multipart:
+      max-request-size: 30MB
+      #  한 파일의 크기 제한
+      max-file-size: 10MB
+
+org:
+  zerock:
+    upload:
+      path: upload  
+        
+
