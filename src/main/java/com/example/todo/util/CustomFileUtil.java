@@ -55,6 +55,11 @@ public class CustomFileUtil {
 		
 		for(MultipartFile file: files) 
 		{
+			if(file.getOriginalFilename() == null || file.getOriginalFilename().equals(""))
+			{
+				continue;
+			}
+			
 			String saveName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 			
 			Path savePath = Paths.get(uploadPath, saveName);
